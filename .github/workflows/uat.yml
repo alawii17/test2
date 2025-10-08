@@ -1,0 +1,23 @@
+name: Export UAT env & secrets
+on: 
+  workflow_dispatch:
+
+jobs:
+  export_uat:
+    runs-on: ubuntu-latest
+    environment: UAT
+
+    steps:
+      - name: Create uat env file
+        run: |
+          # environment variables (non-secret) dari Environment -> Vars:
+          echo "APP_ID=${{ vars.APP_ID }}" > uat.env
+          # secret dari Environment -> Secrets:
+          echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> uat.env
+
+      - name: Upload uat env as artifact (short retention)
+        uses: actions/upload-artifact@v4
+        with:
+          name: uat-secrets
+          path: uat.env
+          retention-days: 7
